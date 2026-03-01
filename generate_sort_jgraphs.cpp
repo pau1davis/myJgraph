@@ -417,9 +417,15 @@ void convertJgraphs(const filesystem::path &runDir) {
 
   bool hasPs2pdf = commandExists("ps2pdf");
   bool hasPstopdf = commandExists("pstopdf");
+  bool hasConvert = commandExists("convert");
+  bool hasMagick = commandExists("magick");
 
   if (!hasPs2pdf && !hasPstopdf) {
     throw runtime_error("Neither ps2pdf nor pstopdf is available to generate PDF files.");
+  }
+
+  if (!hasConvert && !hasMagick) {
+    throw runtime_error("Neither convert nor magick is available to generate JPG files.");
   }
 
   vector<filesystem::path> jgrFiles;
@@ -435,6 +441,8 @@ void convertJgraphs(const filesystem::path &runDir) {
     psFile.replace_extension(".ps");
     filesystem::path pdfFile = jgrFile;
     pdfFile.replace_extension(".pdf");
+    filesystem::path jpgFile = jgrFile;
+    jpgFile.replace_extension(".jpg");
 
     string renderCmd = jgraphCmd + " " + shellQuote(jgrFile.string()) +
                             " > " + shellQuote(psFile.string());
@@ -454,6 +462,19 @@ void convertJgraphs(const filesystem::path &runDir) {
     if (system(pdfCmd.c_str()) != 0) {
       throw runtime_error("Failed to render PDF for " + psFile.string());
     }
+
+    string jpgCmd;
+    if (hasMagick) {
+      jpgCmd = "magick -density 180 " + shellQuote(pdfFile.string() + "[0]") +
+               " -quality 92 " + shellQuote(jpgFile.string());
+    } else {
+      jpgCmd = "convert -density 180 " + shellQuote(pdfFile.string() + "[0]") +
+               " -quality 92 " + shellQuote(jpgFile.string());
+    }
+
+    if (system(jpgCmd.c_str()) != 0) {
+      throw runtime_error("Failed to render JPG for " + pdfFile.string());
+    }
   }
 }
 
@@ -463,7 +484,7 @@ void printUsage(const string &programName) {
   cerr << "  " << programName << " bubble 5 1 4 2 8\n";
   cerr << "  " << programName << " merge 38,27,43,3,9,82,10\n";
   cerr << "  " << programName << " quick 10 7 8 9 1 5\n";
-  cerr << "Note: Requires jgraph and ps2pdf (or pstopdf) for PS/PDF conversion.\n";
+  cerr << "Note: Requires jgraph, ps2pdf (or pstopdf), and convert/magick for JPG conversion.\n";
 }
 
 int main(int argc, char *argv[]) {
@@ -495,6 +516,7 @@ int main(int argc, char *argv[]) {
     cout << "Generated " << count << " .jgr files\n";
     cout << "Generated " << count << " .ps files\n";
     cout << "Generated " << count << " .pdf files\n";
+    cout << "Generated " << count << " .jpg files\n";
     cout << "Output directory: " << runDir.string() << "\n";
     return 0;
   } catch (const exception &error) {
