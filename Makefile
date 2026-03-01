@@ -43,4 +43,4 @@ $(TARGET): $(SRC)
 
 clean:
 	rm -f $(TARGET)
-	rm -rf $(DEMO_DIR) $(IMG_DIR)
+	rm -rf $(DEMO_DIR)
