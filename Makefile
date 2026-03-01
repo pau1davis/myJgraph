@@ -25,12 +25,18 @@ demo: $(TARGET)
 	quick_dir=$$(ls -1dt tests/bin/quick_* | head -n 1); \
 	cp "$$quick_dir/step_0004.pdf" $(DEMO_DIR)/quick_partition.pdf; \
 	cp "$$quick_dir/step_0010.pdf" $(DEMO_DIR)/quick_pivot_settle.pdf
-	convert -density 180 "$(DEMO_DIR)/bubble_swap.pdf[0]" -quality 92 $(IMG_DIR)/bubble_swap.jpg || sips -s format jpeg $(DEMO_DIR)/bubble_swap.pdf --out $(IMG_DIR)/bubble_swap.jpg >/dev/null
-	convert -density 180 "$(DEMO_DIR)/bubble_late_pass.pdf[0]" -quality 92 $(IMG_DIR)/bubble_late_pass.jpg || sips -s format jpeg $(DEMO_DIR)/bubble_late_pass.pdf --out $(IMG_DIR)/bubble_late_pass.jpg >/dev/null
-	convert -density 180 "$(DEMO_DIR)/merge_mid_merge.pdf[0]" -quality 92 $(IMG_DIR)/merge_mid_merge.jpg || sips -s format jpeg $(DEMO_DIR)/merge_mid_merge.pdf --out $(IMG_DIR)/merge_mid_merge.jpg >/dev/null
-	convert -density 180 "$(DEMO_DIR)/merge_near_final.pdf[0]" -quality 92 $(IMG_DIR)/merge_near_final.jpg || sips -s format jpeg $(DEMO_DIR)/merge_near_final.pdf --out $(IMG_DIR)/merge_near_final.jpg >/dev/null
-	convert -density 180 "$(DEMO_DIR)/quick_partition.pdf[0]" -quality 92 $(IMG_DIR)/quick_partition.jpg || sips -s format jpeg $(DEMO_DIR)/quick_partition.pdf --out $(IMG_DIR)/quick_partition.jpg >/dev/null
-	convert -density 180 "$(DEMO_DIR)/quick_pivot_settle.pdf[0]" -quality 92 $(IMG_DIR)/quick_pivot_settle.jpg || sips -s format jpeg $(DEMO_DIR)/quick_pivot_settle.pdf --out $(IMG_DIR)/quick_pivot_settle.jpg >/dev/null
+	convert -density 180 "$(DEMO_DIR)/bubble_swap.pdf[0]" -quality 92 $(DEMO_DIR)/bubble_swap.jpg || sips -s format jpeg $(DEMO_DIR)/bubble_swap.pdf --out $(DEMO_DIR)/bubble_swap.jpg >/dev/null
+	cp $(DEMO_DIR)/bubble_swap.jpg $(IMG_DIR)/bubble_swap.jpg
+	convert -density 180 "$(DEMO_DIR)/bubble_late_pass.pdf[0]" -quality 92 $(DEMO_DIR)/bubble_late_pass.jpg || sips -s format jpeg $(DEMO_DIR)/bubble_late_pass.pdf --out $(DEMO_DIR)/bubble_late_pass.jpg >/dev/null
+	cp $(DEMO_DIR)/bubble_late_pass.jpg $(IMG_DIR)/bubble_late_pass.jpg
+	convert -density 180 "$(DEMO_DIR)/merge_mid_merge.pdf[0]" -quality 92 $(DEMO_DIR)/merge_mid_merge.jpg || sips -s format jpeg $(DEMO_DIR)/merge_mid_merge.pdf --out $(DEMO_DIR)/merge_mid_merge.jpg >/dev/null
+	cp $(DEMO_DIR)/merge_mid_merge.jpg $(IMG_DIR)/merge_mid_merge.jpg
+	convert -density 180 "$(DEMO_DIR)/merge_near_final.pdf[0]" -quality 92 $(DEMO_DIR)/merge_near_final.jpg || sips -s format jpeg $(DEMO_DIR)/merge_near_final.pdf --out $(DEMO_DIR)/merge_near_final.jpg >/dev/null
+	cp $(DEMO_DIR)/merge_near_final.jpg $(IMG_DIR)/merge_near_final.jpg
+	convert -density 180 "$(DEMO_DIR)/quick_partition.pdf[0]" -quality 92 $(DEMO_DIR)/quick_partition.jpg || sips -s format jpeg $(DEMO_DIR)/quick_partition.pdf --out $(DEMO_DIR)/quick_partition.jpg >/dev/null
+	cp $(DEMO_DIR)/quick_partition.jpg $(IMG_DIR)/quick_partition.jpg
+	convert -density 180 "$(DEMO_DIR)/quick_pivot_settle.pdf[0]" -quality 92 $(DEMO_DIR)/quick_pivot_settle.jpg || sips -s format jpeg $(DEMO_DIR)/quick_pivot_settle.pdf --out $(DEMO_DIR)/quick_pivot_settle.jpg >/dev/null
+	cp $(DEMO_DIR)/quick_pivot_settle.jpg $(IMG_DIR)/quick_pivot_settle.jpg
 
 $(TARGET): $(SRC)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC)
