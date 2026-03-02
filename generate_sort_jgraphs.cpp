@@ -1,17 +1,17 @@
 //sortviz source code
 //Paul Davis : pdavis51
-#include <algorithm>
-#include <chrono>
-#include <cstdlib>
-#include <filesystem>
-#include <fstream>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <stdexcept>
-#include <string>
-#include <vector>
+#include <algorithm>  // sort stuff
+#include <chrono>  // timestamp generation 
+#include <cstdlib>  // system() calls for shell command execution
+#include <filesystem>  // path handling
+#include <fstream>  
+#include <functional>  // sort stuff
+#include <iomanip>  // formatting
+#include <iostream>  
+#include <sstream>  
+#include <stdexcept>  // runtime_error exceptions for validation failures
+#include <string> 
+#include <vector>  
 
 using namespace std;
 
@@ -24,10 +24,12 @@ struct SortStep {
 	vector<int> moveToIndices;
 };
 
+// returns true when a highlight index list contains the requested index
 bool containsIndex(const vector<int>& indices, int value) {
 	return find(indices.begin(), indices.end(), value) != indices.end();
 }
 
+// splits a comma-delimited string into non-empty tokens
 vector<string> splitComma(const string& text) {
 	vector<string> tokens;
 	stringstream stream(text);
@@ -40,6 +42,7 @@ vector<string> splitComma(const string& text) {
 	return tokens;
 }
 
+// escapes a string for single quoted use in shell commands
 string shellQuote(const string& value) {
 	string quoted = "'";
 	for (char ch : value) {
@@ -53,11 +56,13 @@ string shellQuote(const string& value) {
 	return quoted;
 }
 
+// checks whether a command is available on PATH
 bool commandExists(const string& name) {
 	string check = "command -v " + name + " >/dev/null 2>&1";
 	return system(check.c_str()) == 0;
 }
 
+// parses command line data from space-separated and/or comma-separated args
 vector<int> parseValues(int argc, char* argv[]) {
 	if (argc < 4) {
 		throw runtime_error(
@@ -85,6 +90,7 @@ vector<int> parseValues(int argc, char* argv[]) {
 	return values;
 }
 
+// runs bubble sort while recording a visualization step after each comparison
 vector<SortStep> bubbleSortSteps(const vector<int>& input) {
 	vector<int> arr = input;
 	vector<SortStep> steps;
@@ -124,6 +130,7 @@ vector<SortStep> bubbleSortSteps(const vector<int>& input) {
 	return steps;
 }
 
+// runs merge sort while recording write operations for each merge action
 vector<SortStep> mergeSortSteps(const vector<int>& input) {
 	vector<int> arr = input;
 	vector<int> aux = arr;
@@ -211,6 +218,7 @@ vector<SortStep> mergeSortSteps(const vector<int>& input) {
 	return steps;
 }
 
+// runs quick sort while recording partition comparisons and swaps
 vector<SortStep> quickSortSteps(const vector<int>& input) {
 	vector<int> arr = input;
 	vector<SortStep> steps;
@@ -297,6 +305,7 @@ vector<SortStep> quickSortSteps(const vector<int>& input) {
 	return steps;
 }
 
+// renders a single sorting step into jgraph source text
 string toJgraph(const SortStep& step, const string& sortType) {
 	int n = static_cast<int>(step.values.size());
 	int xMax = max(1, n);
@@ -383,6 +392,7 @@ string toJgraph(const SortStep& step, const string& sortType) {
 	return out.str();
 }
 
+// creates a timestamped output directory for a specific sort run
 filesystem::path createRunDir(const string& sortType,
 		const filesystem::path& root) {
 	auto now = chrono::system_clock::now();
@@ -394,6 +404,7 @@ filesystem::path createRunDir(const string& sortType,
 	return runDir;
 }
 
+// writes all recorded sort steps as numbered .jgr files
 int writeSteps(const filesystem::path& runDir, const string& sortType,
 		const vector<SortStep>& steps) {
 	for (const auto& step : steps) {
@@ -406,6 +417,7 @@ int writeSteps(const filesystem::path& runDir, const string& sortType,
 	return static_cast<int>(steps.size());
 }
 
+// converts generated .jgr files to .ps, .pdf, and .jpg files
 void convertJgraphs(const filesystem::path& runDir) {
 	string jgraphCmd = filesystem::exists("./jgraph") ? "./jgraph" : "jgraph";
 
@@ -483,6 +495,7 @@ void convertJgraphs(const filesystem::path& runDir) {
 	}
 }
 
+// Prints CLI usage and dependency notes.
 void printUsage(const string& programName) {
 	cerr << "Usage: " << programName << " <bubble|merge|quick> <values...>\n";
 	cerr << "Examples:\n";
@@ -493,13 +506,14 @@ void printUsage(const string& programName) {
 		"for JPG conversion.\n";
 }
 
+
 int main(int argc, char* argv[]) {
 	if (argc < 4) {
 		printUsage(argv[0]);
 		return 1;
 	}
 
-	try {
+	try { //error catching for invalid input 
 		string sortType = argv[1];
 		vector<int> values = parseValues(argc, argv);
 
