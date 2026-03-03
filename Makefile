@@ -2,6 +2,9 @@ CXX := g++
 CXXFLAGS := -std=c++17 -O2 -Wall -Wextra -pedantic
 TARGET := sortviz
 SRC := generate_sort_jgraphs.cpp
+JGRAPH_LOCAL = ../../../jgraph/jgraph
+JGRAPH_HYDRA = /home/jplank/bin/LINUX-X86_64/jgraph
+JGRAPH=$(JGRAPH_HYDRA)
 DEMO_DIR := tests/demo
 IMG_DIR := docs/images
 
