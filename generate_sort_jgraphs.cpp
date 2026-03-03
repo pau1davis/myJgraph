@@ -339,10 +339,16 @@ string toJgraph(const SortStep& step, const string& sortType) {
 	const double cellWidth = 0.8;
 	const double graphWidth = min(7.0, max(2.5, xMax * cellWidth));
 	const double graphHeight = 2.8;
+	const double pageWidth = 8.5;
+	const double pageHeight = 11.0;
+	const double xTranslate = max(0.0, (pageWidth - graphWidth) / 2.0);
+	const double yTranslate = max(0.0, (pageHeight - graphHeight) / 2.0);
 
 	ostringstream out;
 	out << "(* Auto-generated sort step graph *)\n\n";
 	out << "newgraph\n";
+	out << "x_translate " << fixed << setprecision(3) << xTranslate << "\n";
+	out << "y_translate " << fixed << setprecision(3) << yTranslate << "\n";
 	out << "xaxis min 0 max " << xMax << " size " << graphWidth << " nodraw\n";
 	out << "yaxis min 0 max 3 size " << graphHeight << " nodraw\n";
 	out << "newstring hjc x " << fixed << setprecision(3) << (xMax / 2.0)
